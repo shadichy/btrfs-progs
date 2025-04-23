@@ -14,4 +14,7 @@ int pthread_setcanceltype(int type, int *oldtype);
 int pthread_setcancelstate(int state, int *oldstate);
 int pthread_cancel(pthread_t thread_id);
 
+int btrfs_set_thread_exit_handler();
+void btrfs_thread_exit_handler(int sig);
+
 #endif // defined(__ANDROID__)
