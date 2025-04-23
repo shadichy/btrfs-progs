@@ -6,6 +6,7 @@
  * as Android NDK does not support `pthread_cancel()`.
  */
 
+#include <string.h>
 #include <signal.h>
 #include "btrfs_pthread.h"
 
