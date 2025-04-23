@@ -697,11 +697,7 @@ static const char * const cmd_inspect_list_chunks_usage[] = {
 	"",
 	HELPINFO_UNITS_LONG,
 	OPTLINE("--sort MODE", "sort by a column (ascending):\n"
-#ifdef __ANDROID__
-			"MODE is one of:\n"
-#else
 			"MODE is a coma separated list of:\n"
-#endif
 			"devid - by device id (default, with pstart)\n"
 			"pstart - physical start\n"
 			"lstart - logical offset\n"
@@ -856,9 +852,6 @@ static int print_list_chunks(struct list_chunks_ctx *ctx, const char *sortmode,
 	compare_init(&comp, sortit);
 
 	tmp = sortmode;
-#ifdef __ANDROID__
-	id = compare_parse_key_to_id(&comp, &tmp);
-#else
 	do {
 		id = compare_parse_key_to_id(&comp, &tmp);
 		if (id == -1) {
@@ -867,7 +860,6 @@ static int print_list_chunks(struct list_chunks_ctx *ctx, const char *sortmode,
 		}
 		compare_add_sort_id(&comp, id);
 	} while (id >= 0);
-#endif
 
 	/*
 	 * Chunks are sorted logically as found by the ioctl, we need to sort
@@ -888,17 +880,19 @@ static int print_list_chunks(struct list_chunks_ctx *ctx, const char *sortmode,
 	/* Skip additional sort if nothing defined by user. */
 	if (comp.count > 0) {
 #ifdef __ANDROID__
-		if (id == CHUNK_SORT_PSTART) {
-			qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_pstart);
-		}
-		else if (id == CHUNK_SORT_LSTART) {
-			qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_lstart);
-		}
-		else if (id == CHUNK_SORT_USAGE) {
-			qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_usage);
-		}
-		else if (id == CHUNK_SORT_LENGTH) {
-			qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_length);
+		for (i = comp.count - 1; i >= 0; i++) {
+			if (comp.id[i] == CHUNK_SORT_PSTART) {
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_pstart);
+			}
+			else if (comp.id[i] == CHUNK_SORT_LSTART) {
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_lstart);
+			}
+			else if (comp.id[i] == CHUNK_SORT_USAGE) {
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_usage);
+			}
+			else if (comp.id[i] == CHUNK_SORT_LENGTH) {
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_length);
+			}
 		}
 #else
 		qsort_r(ctx->stats, ctx->length, sizeof(ctx->stats[0]),
