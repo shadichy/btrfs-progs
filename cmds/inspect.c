@@ -880,7 +880,7 @@ static int print_list_chunks(struct list_chunks_ctx *ctx, const char *sortmode,
 	/* Skip additional sort if nothing defined by user. */
 	if (comp.count > 0) {
 #ifdef __ANDROID__
-		for (i = 0; i < comp.count; i++) {
+		for (i = comp.count - 1; i >= 0; i--) {
 			if (comp.id[i] == CHUNK_SORT_PSTART) {
 				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), (sort_cmp_t)cmp_cse_pstart);
 			}
