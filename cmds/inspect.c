@@ -880,18 +880,18 @@ static int print_list_chunks(struct list_chunks_ctx *ctx, const char *sortmode,
 	/* Skip additional sort if nothing defined by user. */
 	if (comp.count > 0) {
 #ifdef __ANDROID__
-		for (i = comp.count - 1; i >= 0; i++) {
+		for (i = 0; i < comp.count; i++) {
 			if (comp.id[i] == CHUNK_SORT_PSTART) {
-				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_pstart);
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), (sort_cmp_t)cmp_cse_pstart);
 			}
 			else if (comp.id[i] == CHUNK_SORT_LSTART) {
-				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_lstart);
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), (sort_cmp_t)cmp_cse_lstart);
 			}
 			else if (comp.id[i] == CHUNK_SORT_USAGE) {
-				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_usage);
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), (sort_cmp_t)cmp_cse_usage);
 			}
 			else if (comp.id[i] == CHUNK_SORT_LENGTH) {
-				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), cmp_cse_length);
+				qsort(ctx->stats, ctx->length, sizeof(ctx->stats[0]), (sort_cmp_t)cmp_cse_length);
 			}
 		}
 #else
